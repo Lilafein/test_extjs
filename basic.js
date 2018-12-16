@@ -125,25 +125,32 @@ Ext.onReady(function(){
 		monthText : 'test_month'
     });
 
-    //
-    // example 2: shows off some common Ext.Panel configs as well as a
-    // few extra CalendarPanel-specific configs + a calendar store
-    //
-			var button = Ext.create('Ext.Button', {
-			text: 'Button',
+			var createButton = Ext.create('Ext.Button', {
+			text: 'Создать',
 			margin: 5,
 			renderTo: 'panel',
-			 listeners: {
-    click: function() {
-		
- //rec = new Extensible.calendar.data.EventModel({  Title: 'My cool event', Notes: 'Some notes' });
-	
-		editorWin.show(new Extensible.calendar.data.EventModel());
-	// eventStore.add(rec);
-        this.setText('I was clicked!');
-    }}
-			 
-		});
+			listeners: {
+				click: function() {
+					editorWin.show(new Extensible.calendar.data.EventModel());
+					this.setText('I was clicked!');
+					}
+				}
+			});
+			
+			var deleteButton = Ext.create('Ext.Button', {
+			text: 'Удалить',
+			margin: 5,
+			renderTo: 'panel',
+			listeners: {
+				click: function() {
+					//rec = table.getView();
+					var rec = table.getSelectionModel().getSelection()[0];
+					eventStore.remove(rec);
+					eventStore.sync();
+					this.setText('I was clicked!');
+					}
+				}
+			});
 	
 	var table = Ext.create('Ext.grid.Panel', {
 	store: eventStore,
@@ -158,20 +165,23 @@ Ext.onReady(function(){
                      ptype: 'gridviewdragdrop',
                      enableDrop: false
                   }
-               },
-               enableDragDrop   : true,
-               width            : 300,
-               margins          : '0 2 0 0',
-              
-               selModel         : Ext.create('Ext.selection.RowModel',{
-                  singleSelect  : true
-               })
-               
-            });
-			
+				},
+				listeners: {
+					itemdblclick: function(grid, record){
+							editorWin.show(record);
+							console.log(record.data.Title);
+						}
+					    
+				},
+				enableDragDrop   : true,
+				width            : 300,
+				margins          : '0 2 0 0',
+				selModel         : Ext.create('Ext.selection.RowModel',{
+                singleSelect  : true
+				}) 
+			});	
+				
 			var formPanelDropTargetEl =  formPanel.body.dom;
-            
-            //Creation of tager variable for drop.
             var formPanelDropTarget = Ext.create('Ext.dd.DropTarget', formPanelDropTargetEl, {
                ddGroup: 'GridExample',
                notifyEnter: function(ddSource, e, data) {
