@@ -136,8 +136,9 @@ Ext.onReady(function(){
 			 listeners: {
     click: function() {
 		
- rec = new Extensible.calendar.data.EventModel({  Title: 'My cool event', Notes: 'Some notes' });
-		editorWin.show(rec)
+ //rec = new Extensible.calendar.data.EventModel({  Title: 'My cool event', Notes: 'Some notes' });
+	
+		editorWin.show(new Extensible.calendar.data.EventModel());
 	// eventStore.add(rec);
         this.setText('I was clicked!');
     }}
@@ -145,10 +146,11 @@ Ext.onReady(function(){
 		});
 	
 	var table = Ext.create('Ext.grid.Panel', {
-	 store: eventStore,
-	  renderTo: 'panel',
+	store: eventStore,
+	renderTo: 'panel',
     columns: [
-        {header: 'Name',  dataIndex: 'Title', flex: true}
+			{header: 'Название встречи',  dataIndex: 'Title', flex: true},
+			{header: 'Ф. И. О.', dataIndex: 'PersonName', flex: true}
     ],
                viewConfig: {
                   plugins: {
@@ -179,14 +181,17 @@ Ext.onReady(function(){
                },
                notifyDrop  : function(ddSource, e, data) {
                   var selectedRecord = ddSource.dragData.records[0];
-                  //formPanel.getForm().loadRecord(selectedRecord);
-                  ddSource.view.store.remove(selectedRecord);
+                 // formPanel.getForm().loadRecord(selectedRecord);
+                 // ddSource.view.store.remove(selectedRecord);
+				 
 				  var el = e.getTarget('td', 3);
 				  var parts = el.id.split(formPanel.activeView.dayElIdDelimiter);
 					dt = parts[parts.length-1],
 					parsedDate = Ext.Date.parseDate(dt + ' 12:00', 'Ymd G:i');
+					selectedRecord.data.StartDate = parsedDate;
+					selectedRecord.data.EndDate = '2101-01-12 13:30:00';
 				  rec = new Extensible.calendar.data.EventModel({ StartDate: parsedDate, EndDate: '2101-01-12 13:30:00', Title: selectedRecord.data.name, Notes: 'Some notes' })
-				  formPanel.activeView.getEventEditor().show(rec, null, formPanel.activeView);
+				  formPanel.activeView.getEventEditor().show(selectedRecord, null, formPanel.activeView);
                   return true;
                }
             });
