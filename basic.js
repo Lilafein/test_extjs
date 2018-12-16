@@ -57,14 +57,57 @@ Ext.override(Extensible.calendar.view.Month, {
     }
 });
 Ext.onReady(function(){
+	
     var eventStore = Ext.create('Extensible.calendar.data.MemoryEventStore', {
         // defined in ../data/Events.js
         data: Extensible.example.calendar.data.Events.getData()
     });
 	var eventStore2 = Ext.create('Extensible.calendar.data.MemoryEventStore', {
-        // defined in ../data/Events.js
-        data: Extensible.example.calendar.data.Events.getData()
-    });
+        autoLoad: true,
+    autoSync: true,
+	model: 'Extensible.calendar.data.EventModel',
+    proxy: {
+        type: 'rest',
+        api: {
+            read: 'http://192.168.61.10:8080/meeting_get',
+            create: '/meeting_create',
+            update: '/meeting_update',
+            destroy: '/meeting_delete'
+        },
+		 headers: {
+            'Content-Type': 'application/json'
+        },
+        reader: {
+            type: 'json',
+			root: '',
+            successProperty: 'success',
+            messageProperty: 'message'
+        },
+        writer: {
+            type: 'json'
+            //writeAllFields: true
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+                Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });
+            }
+        }
+    },
+    listeners: {
+        write: function(proxy, operation){
+            if (operation.action == 'destroy') {
+                main.child('#form').setActiveRecord(null);
+            }
+            Ext.example.msg(operation.action, operation.resultSet.message);
+        }
+    }
+});
+
 	
  var editorWin = Ext.create('Org.Silv.form.MeetingEventWindow', {
                 id: 'ext-data-editwin',
