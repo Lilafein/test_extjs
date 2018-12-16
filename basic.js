@@ -132,7 +132,7 @@ Ext.onReady(function(){
 			listeners: {
 				click: function() {
 					editorWin.show(new Extensible.calendar.data.EventModel());
-					this.setText('I was clicked!');
+					//this.setText('I was clicked!');
 					}
 				}
 			});
@@ -147,7 +147,7 @@ Ext.onReady(function(){
 					var rec = table.getSelectionModel().getSelection()[0];
 					eventStore.remove(rec);
 					eventStore.sync();
-					this.setText('I was clicked!');
+					//this.setText('I was clicked!');
 					}
 				}
 			});
