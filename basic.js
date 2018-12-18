@@ -128,7 +128,11 @@ Ext.onReady(function(){
                     'eventupdate': {
                         fn: function(win, rec, animTarget, options) {
                             //win.hide(animTarget);
-                            win.currentView.onEventEditorUpdate(null, rec, options);
+                           // win.currentView.onEventEditorUpdate(null, rec, options);
+						   //eventStore.reload();
+						   eventStore.sync();
+						   editorWin.onCancel();
+						   editorWin.hide();
                         },
                         scope: this
                     },

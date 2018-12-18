@@ -366,7 +366,7 @@ Ext.define('Org.Silv.form.MeetingEventWindow', {
 
         record.beginEdit();
         record.set(obj);
-
+record.endEdit();
         if (!keepEditing || !modified) {
             record.endEdit();
         }
